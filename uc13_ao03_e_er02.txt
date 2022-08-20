@@ -1,0 +1,124 @@
+--DDL
+CREATE DATABASE RpgBD
+GO
+
+USE RpgBD
+GO
+
+CREATE TABLE Usuarios
+(
+	IdUsuario INT PRIMARY KEY IDENTITY,
+	Email VARCHAR(100) UNIQUE NOT NULL,
+	Apelido VARCHAR(20) UNIQUE NOT NULL,
+	Senha VARCHAR(30) NOT NULL
+)
+GO
+
+CREATE TABLE Classes
+(
+	IdClasse INT PRIMARY KEY IDENTITY,
+	Nome VARCHAR(30) UNIQUE NOT NULL,
+	Descricao VARCHAR(255)
+)
+GO
+
+CREATE TABLE Personagens
+(
+	IdPersonagem INT PRIMARY KEY IDENTITY,
+	Nome VARCHAR(30) UNIQUE NOT NULL,
+	IdUsuario INT UNIQUE FOREIGN KEY REFERENCES Usuarios(IdUsuario),
+	IdClasse INT FOREIGN KEY REFERENCES Classes(IdClasse)
+)
+GO
+
+CREATE TABLE Habilidades
+(
+	IdHabilidade INT PRIMARY KEY IDENTITY,
+	Nome VARCHAR(50) UNIQUE NOT NULL,
+	Descricao VARCHAR(255)
+)
+GO
+
+CREATE TABLE ClasseHabilidade
+(
+	IdClasse INT FOREIGN KEY REFERENCES Classes(IdClasse),
+	IdHabilidade INT FOREIGN KEY REFERENCES Habilidades(IdHabilidade)
+)
+GO
+
+--DML
+INSERT INTO Usuarios (Email, Senha, Apelido) VALUES ('email@email.com', '1234', 'Conan')
+INSERT INTO Classes VALUES ('Barbaro', 'Cara durão solta raio')
+INSERT INTO Habilidades VALUES ('Lança Mortal', 'Lança que derrete tudo'), ('Escudo Supremo', 'Escudo que não derrete')
+INSERT INTO Personagens VALUES ('DeuBug', 1, 1)
+INSERT INTO ClasseHabilidade VALUES (1,1), (1,2)
+
+INSERT INTO Usuarios VALUES ('emaila@email.com', 'Chave de Boca', 4321)
+INSERT INTO Classes VALUES ('Monge', 'Cara sábio que dá a letra')
+INSERT INTO Habilidades VALUES ('Recuperar vida', 'Faz desmorrer')
+INSERT INTO Personagens VALUES ('Bitbug', 2, 2)
+INSERT INTO ClasseHabilidade VALUES (2, 2), (2, 3)
+
+UPDATE Usuarios
+SET Senha = 123456
+WHERE IdUsuario = 1
+
+--DQL
+SELECT * FROM Usuarios
+SELECT Senha, Email FROM Usuarios
+SELECT * FROM Classes
+SELECT * FROM Habilidades
+
+SELECT * FROM Personagens
+INNER JOIN Classes
+ON Personagens.IdClasse = Classes.IdClasse
+
+SELECT Personagens.Nome, Classes.Nome, Classes.Descricao FROM Personagens
+INNER JOIN Classes
+ON Personagens.IdClasse = Classes.IdClasse
+
+SELECT P.Nome, C.Nome 'Classe', C.Descricao FROM Personagens P
+INNER JOIN Classes C
+ON P.IdClasse = C.IdClasse
+
+
+
+CREATE DATABASE ExemploJoin
+GO
+
+USE ExemploJoin
+GO
+
+CREATE TABLE NomeA
+(
+	Nome VARCHAR(50) NOT NULL
+)
+GO
+
+CREATE TABLE NomeB
+(
+	Nome VARCHAR(50) NOT NULL
+)
+GO
+
+INSERT INTO NomeA VALUES ('Olavo', 'Adamastor', 'Neuso', 'Guilherma' )
+INSERT INTO NomeB VALUES ('Neuso', 'Guilherma', 'Temístocles', 'Florisfermo' )
+
+SELECT * FROM NomeA
+JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
+
+
+SELECT * FROM NomeA
+LEFT JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
+
+
+SELECT * FROM NomeA
+RIGHT JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
+
+
+SELECT * FROM NomeA
+FULL OUTER JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
